@@ -6,10 +6,13 @@ import org.ag.productcatalog.dtos.ProductDto;
 import org.ag.productcatalog.models.Category;
 import org.ag.productcatalog.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +26,18 @@ public class ProductService implements IProductService {
 
     @Override
     public List<Product> getProducts() {
-        return null;
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        List<FakeStoreProductDto> fakeStoreProductDtos = restTemplate.exchange(
+                "https://fakestoreapi.com/products",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<FakeStoreProductDto>>(){}).getBody();
+        List<Product> products = new ArrayList<>();
+        for (FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
+            Product product = getProduct(fakeStoreProductDto);
+            products.add(product);
+        }
+        return products;
     }
 
     @Override
@@ -36,8 +50,11 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductDto createProduct(ProductDto productDto){
-        return null;
+    public Product createProduct(ProductDto productDto){
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        FakeStoreProductDto fakeStoreProductDto = restTemplate.postForEntity("https://fakestoreapi.com/products",productDto, FakeStoreProductDto.class )
+                .getBody();
+        return getProduct(fakeStoreProductDto);
     }
 
     private Product getProduct(FakeStoreProductDto fakeStoreProductDto){

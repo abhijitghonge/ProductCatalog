@@ -4,6 +4,10 @@ import org.ag.productcatalog.dtos.ProductDto;
 import org.ag.productcatalog.models.Product;
 import org.ag.productcatalog.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,18 +24,30 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductDto> getProducts() {
-        return null;
+    public List<Product> getProducts() {
+        return productService.getProducts();
     }
 
     @GetMapping("{id}")
-    public Product getProduct(@PathVariable("id") long productId) {
-       return productService.getProduct(productId);
+    public ResponseEntity<Product> getProduct(@PathVariable("id") long productId) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+
+        try{
+            if(productId < 1){
+                throw new IllegalArgumentException("Invalid product id");
+            }
+            headers.add("called by", "smart frontend");
+
+            Product product = productService.getProduct(productId);
+            return new ResponseEntity<>(product, headers, HttpStatus.OK);
+        }catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
-    public ProductDto createProduct(@RequestBody ProductDto productDto){
-        return productDto;
+    public Product createProduct(@RequestBody ProductDto productDto){
+        return productService.createProduct(productDto);
     }
 
     @PutMapping
