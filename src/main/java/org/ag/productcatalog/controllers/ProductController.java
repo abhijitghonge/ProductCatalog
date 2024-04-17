@@ -6,8 +6,6 @@ import org.ag.productcatalog.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,33 +28,22 @@ public class ProductController {
 
     @GetMapping("{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") long productId) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-
-        try{
-            if(productId < 1){
-                throw new IllegalArgumentException("Invalid product id");
-            }
-            headers.add("called by", "smart frontend");
-
-            Product product = productService.getProduct(productId);
-            return new ResponseEntity<>(product, headers, HttpStatus.OK);
-        }catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        Product product = productService.getProduct(productId);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody ProductDto productDto){
-        return productService.createProduct(productDto);
+    public Product createProduct(@RequestBody ProductDto productDto) {
+        return productService.createProduct(getProduct(productDto));
     }
 
-    @PutMapping
-    public ProductDto updateProduct(@RequestBody ProductDto productDto){
-        return productDto;
+    @PutMapping("{id}")
+    public Product updateProduct(@PathVariable("id") long id, @RequestBody ProductDto productDto) {
+        return productService.updateProduct(id, getProduct(productDto));
     }
 
     @DeleteMapping
-    public void deleteProduct(@PathVariable("id") long productId){
+    public void deleteProduct(@PathVariable("id") long productId) {
         ProductDto product = new ProductDto();
         product.setId(productId);
         product.setName("iphone");
@@ -64,6 +51,15 @@ public class ProductController {
         product.setPrice(12.0);
 
 
+    }
+
+    private Product getProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setPrice(productDto.getPrice());
+        product.setImageUrl(productDto.getImageUrl());
+        return product;
     }
 
 

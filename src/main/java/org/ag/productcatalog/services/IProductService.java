@@ -1,6 +1,5 @@
 package org.ag.productcatalog.services;
 
-import org.ag.productcatalog.dtos.ProductDto;
 import org.ag.productcatalog.models.Product;
 
 import java.util.List;
@@ -10,5 +9,7 @@ public interface IProductService {
 
     Product getProduct(long productId);
 
-    Product createProduct(ProductDto productDto);
+    Product createProduct(Product product);
+
+    Product updateProduct(long id, Product productDto);
 }
