@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-    private IProductService productService;
+    private final IProductService productService;
 
     @Autowired
     public ProductController(IProductService productService) {
@@ -42,14 +42,10 @@ public class ProductController {
         return productService.updateProduct(id, getProduct(productDto));
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     public void deleteProduct(@PathVariable("id") long productId) {
-        ProductDto product = new ProductDto();
-        product.setId(productId);
-        product.setName("iphone");
-        product.setDescription("iphone");
-        product.setPrice(12.0);
 
+        productService.deleteProduct(productId);
 
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class ProductService implements IProductService {
 
-    private FakeStoreApiClient fakeStoreApiClient;
+    private final FakeStoreApiClient fakeStoreApiClient;
 
 
     public ProductService( FakeStoreApiClient fakeStoreApiClient) {
@@ -57,6 +57,10 @@ public class ProductService implements IProductService {
 
     }
 
+    public void deleteProduct(long id){
+        fakeStoreApiClient.deleteProduct(id);
+    }
+
     private Product getProduct(FakeStoreProductDto fakeStoreProductDto) {
         Product product = new Product();
         product.setId(fakeStoreProductDto.getId());
@@ -72,12 +76,11 @@ public class ProductService implements IProductService {
     }
 
     private FakeStoreProductDto getFakeStoreProductDto(Product product) {
-        FakeStoreProductDto fakeStoreProductDto = FakeStoreProductDto.builder()
+        return FakeStoreProductDto.builder()
                 .title(product.getName())
                 .image(product.getImageUrl())
                 .price(product.getPrice())
                 .description(product.getDescription()).build();
-        return fakeStoreProductDto;
     }
 
 

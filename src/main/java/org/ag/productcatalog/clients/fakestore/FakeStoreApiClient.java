@@ -1,7 +1,6 @@
 package org.ag.productcatalog.clients.fakestore;
 
 import org.ag.productcatalog.dtos.FakeStoreProductDto;
-import org.ag.productcatalog.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -25,10 +24,9 @@ public class FakeStoreApiClient {
 
     public FakeStoreProductDto getProduct(long productId){
         RestTemplate restTemplate = restTemplateBuilder.build();
-        FakeStoreProductDto fakeStoreProductDto = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}", FakeStoreProductDto.class, productId)
-                .getBody();
 
-        return fakeStoreProductDto;
+        return restTemplate.getForEntity("https://fakestoreapi.com/products/{id}", FakeStoreProductDto.class, productId)
+                .getBody();
     }
 
 
@@ -49,8 +47,14 @@ public class FakeStoreApiClient {
     }
 
     public FakeStoreProductDto updateProduct(long id, FakeStoreProductDto productDto) {
+
         return  putForEntity("https://fakestoreapi.com/products/{id}", productDto, FakeStoreProductDto.class, id)
                 .getBody();
+    }
+
+    public void deleteProduct(long id){
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        restTemplate.delete("https://fakestoreapi.com/products/{id}", id);
     }
 
     public <T> ResponseEntity<T> putForEntity(String url, @Nullable Object request, Class<T> responseType, Object... uriVariables) throws RestClientException {
@@ -59,4 +63,5 @@ public class FakeStoreApiClient {
         ResponseExtractor<ResponseEntity<T>> responseExtractor = restTemplate.responseEntityExtractor(responseType);
         return restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor, uriVariables);
     }
+
 }

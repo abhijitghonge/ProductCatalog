@@ -1,11 +1,9 @@
 package org.ag.productcatalog.dtos;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
-@Data
+@Getter
 @Builder
 public class FakeStoreProductDto {
 
