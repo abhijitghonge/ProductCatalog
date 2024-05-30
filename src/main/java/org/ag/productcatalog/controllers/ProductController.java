@@ -1,6 +1,7 @@
 package org.ag.productcatalog.controllers;
 
 import org.ag.productcatalog.dtos.ProductDto;
+import org.ag.productcatalog.models.Category;
 import org.ag.productcatalog.models.Product;
 import org.ag.productcatalog.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,13 @@ public class ProductController {
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
         product.setImageUrl(productDto.getImageUrl());
+        Category category = new Category();
+        if(productDto.getCategoryDto() != null) {
+            category.setName(productDto.getCategoryDto().getName());
+            category.setDescription(productDto.getCategoryDto().getDescription());
+        }
+
+        product.setCategory(category);
         return product;
     }
 
