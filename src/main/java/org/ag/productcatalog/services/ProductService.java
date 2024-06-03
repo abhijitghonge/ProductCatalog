@@ -20,6 +20,8 @@ public class ProductService implements IProductService {
         this.fakeStoreApiClient = fakeStoreApiClient;
     }
 
+
+
     @Override
     public List<Product> getProducts() {
 
@@ -61,6 +63,11 @@ public class ProductService implements IProductService {
         fakeStoreApiClient.deleteProduct(id);
     }
 
+    @Override
+    public Product getProductDetails(Long pid, Long uid) {
+        return null;
+    }
+
     private Product getProduct(FakeStoreProductDto fakeStoreProductDto) {
         Product product = new Product();
         product.setId(fakeStoreProductDto.getId());
@@ -82,6 +89,8 @@ public class ProductService implements IProductService {
                 .price(product.getPrice())
                 .description(product.getDescription()).build();
     }
+
+
 
 
 }

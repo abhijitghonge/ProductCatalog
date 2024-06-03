@@ -1,5 +1,6 @@
 package org.ag.productcatalog.controllers;
 
+import org.ag.productcatalog.dtos.CategoryDto;
 import org.ag.productcatalog.dtos.ProductDto;
 import org.ag.productcatalog.models.Category;
 import org.ag.productcatalog.models.Product;
@@ -33,6 +34,15 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
+
+    @GetMapping("{pid}/{uid}")
+    public ProductDto getProductDetailsBasedOnUserScope(@PathVariable Long pid,@PathVariable Long uid) {
+
+
+        Product product = productService.getProductDetails(pid,uid);
+        return getProductDto(product);
+    }
+
     @PostMapping
     public Product createProduct(@RequestBody ProductDto productDto) {
         return productService.createProduct(getProduct(productDto));
@@ -64,6 +74,24 @@ public class ProductController {
 
         product.setCategory(category);
         return product;
+    }
+
+    private ProductDto getProductDto(Product product) {
+        ProductDto productDto = new ProductDto();
+        productDto.setId(product.getId());
+        productDto.setName(product.getName());
+        productDto.setDescription(product.getDescription());
+        productDto.setPrice(product.getPrice());
+        productDto.setCategoryDto(getCategoryDto(product.getCategory()));
+        return productDto;
+    }
+
+    private CategoryDto getCategoryDto(Category category) {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(category.getId());
+        categoryDto.setName(category.getName());
+        categoryDto.setDescription(category.getDescription());
+        return categoryDto;
     }
 
 

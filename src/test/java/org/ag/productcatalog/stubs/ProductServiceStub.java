@@ -39,4 +39,9 @@ public class ProductServiceStub implements IProductService {
     public void deleteProduct(long productId) {
         products.remove(productId);
     }
+
+    @Override
+    public Product getProductDetails(Long pid, Long uid) {
+        return null;
+    }
 }
