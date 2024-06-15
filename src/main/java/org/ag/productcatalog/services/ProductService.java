@@ -4,20 +4,27 @@ import org.ag.productcatalog.clients.fakestore.FakeStoreApiClient;
 import org.ag.productcatalog.dtos.FakeStoreProductDto;
 import org.ag.productcatalog.models.Category;
 import org.ag.productcatalog.models.Product;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 
 @Service
 public class ProductService implements IProductService {
 
     private final FakeStoreApiClient fakeStoreApiClient;
 
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public ProductService( FakeStoreApiClient fakeStoreApiClient) {
+
+    public ProductService( FakeStoreApiClient fakeStoreApiClient, RedisTemplate<String, Object> redisTemplate ) {
 
         this.fakeStoreApiClient = fakeStoreApiClient;
+
+        this.redisTemplate = redisTemplate;
     }
 
 
@@ -40,7 +47,14 @@ public class ProductService implements IProductService {
         if (productId < 1) {
             throw new IllegalArgumentException("Invalid product id: " + productId);
         }
-        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClient.getProduct(productId);
+
+        FakeStoreProductDto fakeStoreProductDto = (FakeStoreProductDto) redisTemplate.opsForHash().get("PRODUCT", productId);
+
+        if(!Objects.isNull(fakeStoreProductDto)){
+            return getProduct(fakeStoreProductDto);
+        }
+        fakeStoreProductDto = fakeStoreApiClient.getProduct(productId);
+        redisTemplate.opsForHash().put("PRODUCT", productId, fakeStoreProductDto);
 
         return getProduct(fakeStoreProductDto);
     }

@@ -2,10 +2,14 @@ package org.ag.productcatalog.dtos;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Getter
 @Builder
-public class FakeStoreProductDto {
+@ToString
+public class FakeStoreProductDto implements Serializable {
 
     private long id;
     private String title;
